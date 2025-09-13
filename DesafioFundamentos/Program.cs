@@ -1,26 +1,36 @@
 ﻿using DesafioFundamentos.Models;
 
-// Coloca o encoding para UTF8 para exibir acentuação
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-decimal precoInicial = 0;
-decimal precoPorHora = 0;
+decimal precoInicial = ObterPreco("Digite o preço inicial:");
+decimal precoPorHora = ObterPreco("Agora digite o preço por hora:");
 
-Console.WriteLine("Seja bem vindo ao sistema de estacionamento!\n" +
-                  "Digite o preço inicial:");
-precoInicial = Convert.ToDecimal(Console.ReadLine());
+Estacionamento estacionamento = new Estacionamento(precoInicial, precoPorHora);
 
-Console.WriteLine("Agora digite o preço por hora:");
-precoPorHora = Convert.ToDecimal(Console.ReadLine());
-
-// Instancia a classe Estacionamento, já com os valores obtidos anteriormente
-Estacionamento es = new Estacionamento(precoInicial, precoPorHora);
-
-string opcao = string.Empty;
 bool exibirMenu = true;
 
-// Realiza o loop do menu
 while (exibirMenu)
+{
+    exibirMenu = ExibirMenu(estacionamento);
+}
+
+Console.WriteLine("O programa se encerrou");
+
+
+static decimal ObterPreco(string mensagem)
+{
+    decimal preco;
+    Console.WriteLine(mensagem);
+
+    while (!decimal.TryParse(Console.ReadLine(), out preco) || preco < 0)
+    {
+        Console.WriteLine("Preço inválido. Por favor, digite um valor numérico válido maior ou igual a zero:");
+    }
+
+    return preco;
+}
+
+static bool ExibirMenu(Estacionamento estacionamento)
 {
     Console.Clear();
     Console.WriteLine("Digite a sua opção:");
@@ -29,31 +39,28 @@ while (exibirMenu)
     Console.WriteLine("3 - Listar veículos");
     Console.WriteLine("4 - Encerrar");
 
-    switch (Console.ReadLine())
+    string opcao = Console.ReadLine();
+
+    switch (opcao)
     {
         case "1":
-            es.AdicionarVeiculo();
+            estacionamento.AdicionarVeiculo();
             break;
-
         case "2":
-            es.RemoverVeiculo();
+            estacionamento.RemoverVeiculo();
             break;
-
         case "3":
-            es.ListarVeiculos();
+            estacionamento.ListarVeiculos();
             break;
-
         case "4":
-            exibirMenu = false;
-            break;
-
+            return false;
         default:
-            Console.WriteLine("Opção inválida");
+            Console.WriteLine("Opção inválida. Tente novamente.");
             break;
     }
 
     Console.WriteLine("Pressione uma tecla para continuar");
-    Console.ReadLine();
+    Console.ReadKey();
+    return true;
 }
 
-Console.WriteLine("O programa se encerrou");
